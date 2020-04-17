@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>创建学生</h1>
+        <h1>{{id? '修改':'新建'}}学生</h1>
         <el-form label-width="120px" @submit.native.prevent="save">
             <el-form-item label="名称">
                 <el-input v-model="model.name"></el-input>
@@ -13,6 +13,9 @@
 </template>
 <script>
 export default {
+    props:{
+        id:{}
+    },
     data(){
         return{
             model:{}
@@ -20,13 +23,26 @@ export default {
     },
     methods: {
         async save(){
-            await this.$http.post('students',this.model)
+            // let res
+            if(this.id){
+                await this.$http.put(`students/${this.id}`,this.model)
+            }else{
+                await this.$http.post('students',this.model)
+            }
+            
             this.$router.push('/students/list')
             this.$message({
                 type:'success',
                 message:'保存成功'
             })
+        },
+        async fetch(){
+            const res = await this.$http.get(`students/${this.id}`)
+            this.model = res.data
         }
     },
+    created(){
+        this.id && this.fetch()
+    }
 }
 </script>

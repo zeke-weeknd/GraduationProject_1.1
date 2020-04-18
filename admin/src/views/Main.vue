@@ -1,13 +1,23 @@
 <template>
 <el-container style="height: 100vh;">
   <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-    <el-menu router :default-openeds="['1', '3']">
+    <el-menu router :default-openeds="['1','2', '3']">
       <el-submenu index="1">
         <template slot="title"><i class="el-icon-message"></i>导航一</template>
         <el-menu-item-group>
           <template slot="title">学生</template>
           <el-menu-item index="/students/create">新建学生</el-menu-item>
           <el-menu-item index="/students/list">学生列表</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
+
+
+      <el-submenu index="2">
+        <template slot="title"><i class="el-icon-message"></i>导航一</template>
+        <el-menu-item-group>
+          <template slot="title">课程</template>
+          <el-menu-item index="/class/create">新建课程</el-menu-item>
+          <el-menu-item index="/class/list">课程列表</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
 

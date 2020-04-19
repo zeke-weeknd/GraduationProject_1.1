@@ -5,6 +5,10 @@ module.exports = app =>{
     const Student = require('../../models/Student')
     //获取课程模型
     const Class = require('../../models/Class')
+    //获取教师模型
+    const Teacher = require('../../models/Teacher')
+    //获取管理员模型
+    const Admin = require('../../models/Administrators')
 
 
 
@@ -71,9 +75,6 @@ module.exports = app =>{
             success: true
         })
     })
-
-
-
     //修改学生所属课程的接口
     router.post('/class/changeClass/:id',async(request,response) => {
         //修改学生的class
@@ -133,12 +134,90 @@ module.exports = app =>{
 
 
 
+    
+    //获取教师列表
+    router.get('/teachers', async(request,response) => {
+        const items = await Teacher.find()
+        response.send(items)
+    })
+    //创建教师的接口
+    router.post('/teachers', async(request,response) => {
+        const model = await Teacher.create(request.body)
+        response.send(model)
+    })
+    //修改教师的接口
+    router.put('/teachers/:id', async(request,response) => {
+        const model = await Teacher.findByIdAndUpdate(request.params.id,request.body)
+        response.send(model)
+    })
+    //获取教师详情的接口
+    router.get('/teachers/:id', async(request,response) => {
+        const model = await Teacher.findById(request.params.id)
+        response.send(model)
+    })
+    //删除教师的接口
+    router.delete('/teachers/:id', async(request,response) => {
+        await Teacher.findByIdAndDelete(request.params.id, request.body)
+        response.send({
+            success: true
+        })
+    })
 
 
 
+    //获取管理员列表
+    router.get('/admins', async(request,response) => {
+        const items = await Admin.find()
+        response.send(items)
+    })
+    //创建管理员的接口
+    router.post('/admins', async(request,response) => {
+        const model = await Admin.create(request.body)
+        response.send(model)
+    })
+    //修改管理员的接口
+    router.put('/admins/:id', async(request,response) => {
+        const model = await Admin.findByIdAndUpdate(request.params.id,request.body)
+        response.send(model)
+    })
+    //获取管理员详情的接口
+    router.get('/admins/:id', async(request,response) => {
+        const model = await Admin.findById(request.params.id)
+        response.send(model)
+    })
+    //删除管理员的接口
+    router.delete('/admins/:id', async(request,response) => {
+        await Admin.findByIdAndDelete(request.params.id, request.body)
+        response.send({
+            success: true
+        })
+    })
 
+    //登陆路由
+    router.post('/login',async(request,response) => {
+        // response.send('ok')
+        const {userName,password} = request.body
+        //根据用户名找用户
+        // console.log(userName)
+        const user = await Admin.findOne({userName:userName})
+        if(!user){
+            return response.status(422).send({
+                message:'用户不存在'
+            })
+        }
+        //验证密码
 
-
+        if(user.password!=password){
+            return response.status(422).send({
+                message:'密码不正确'
+            })
+        }else{
+            response.send({user})
+        }
+        // console.log(user.password)
+        
+        
+    })
 
 
 

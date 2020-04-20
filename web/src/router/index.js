@@ -11,6 +11,13 @@ Vue.use(VueRouter)
     name: 'Index',
     component: Index
   },
+
+  //登录的路由
+  {
+    path: '/',
+    name: 'Index',
+    component: Index
+  },
   
 ]
 

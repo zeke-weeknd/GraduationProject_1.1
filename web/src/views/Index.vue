@@ -6,8 +6,8 @@
       <div class="topNav-contain">
         <img src="../images/Sign.png" alt="">
         <div class="loginAndRegister">
-          <router-link class="login" to="/login">登录</router-link>
-          <router-link class="register" to="">注册</router-link>
+          <router-link class="login" to="/login-1">{{username? '欢迎你，'+username:'登录'}}</router-link>
+          <router-link class="register" to="/register">注册</router-link>
         </div>
         </div>
     </div>
@@ -25,21 +25,23 @@
       <div class="function">
         <div class="newClass">
           <img src="../images/图层 2.png" alt="" width="100%" height="100%">
-          <div>
-            <h2>.新建课程</h2>
-            <span>New curriculum</span>
-          </div>
+          <!-- <router-link to="/function" @click="go"> -->
+            <div @click="go">
+              <h2>.新建课程</h2>
+              <span>New curriculum</span>
+            </div>
+          <!-- </router-link> -->
         </div>
         <div class="Class">
           <img src="../images/图层 3.png" alt="" width="100%" height="100%">
-          <div>
+          <div @click="go2">
              <h2>.课程管理</h2>
              <span>Management course</span>
           </div>
         </div>
         <div class="startClass">
           <img src="../images/图层 4.png" alt="" width="100%" height="100%">
-          <div>
+          <div @click="go3">
              <h2>.开始上课</h2>
              <span>Class begins</span>
           </div>
@@ -65,6 +67,56 @@
 
 
 export default {
+  props:[],
+  data(){
+    return{
+      username: '',
+      id:''
+    }
+  },
+  methods:{
+    getUser(){
+      this.username = sessionStorage.name
+      this.id = sessionStorage.id
+      
+    },
+    //新建课程跳转方法
+    go(){
+      if(!this.username){
+        this.$message({
+              type:'error',
+              message:"还未登录，请先登录后才可使用当前功能"
+            })
+      }else{
+        this.$router.push(`/newClass`)
+      }
+    },
+    //管理课程跳转方法
+    go2(){
+      if(!this.username){
+        this.$message({
+              type:'error',
+              message:"还未登录，请先登录后才可使用当前功能"
+            })
+      }else{
+        this.$router.push(`/classList`)
+      }
+    },
+    //开始上课
+    go3(){
+      if(!this.username){
+        this.$message({
+              type:'error',
+              message:"还未登录，请先登录后才可使用当前功能"
+            })
+      }else{
+        this.$router.push(`/startClass`)
+      }
+    }
+  },
+  created(){
+    this.getUser()
+  }
   
 }
 </script>

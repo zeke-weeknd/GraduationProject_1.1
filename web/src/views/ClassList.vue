@@ -12,12 +12,14 @@
       </el-table-column>
       <el-table-column prop="students" label="学生">
       </el-table-column>
+      <el-table-column prop="teacher.name" label="任课教师">
+      </el-table-column>
        <el-table-column
       fixed="right"
       label="操作"
       width="180">
       <template slot-scope="scope">
-        <el-button type="text" size="small" @click="$router.push(`/class/edit/${scope.row._id}`)">编辑</el-button>
+        <el-button type="text" size="small" @click="$router.push(`/newClass/${scope.row._id}`)">编辑</el-button>
         <el-button type="text" size="small" @click="remove(scope.row)">删除</el-button>
       </template>
     </el-table-column>
@@ -34,14 +36,15 @@ export default {
   },
   methods:{
     async fetch(){
-      const res = await this.$http.get('class')
+      const res = await this.$http.get(`classlist/${sessionStorage.id}`)
       this.items = res.data
+      // console.log(this.items)
     },
 
 
 
     async remove(row){
-      this.$confirm(`是否确定删除学生 "${row.name}"`, '确认信息', {
+      this.$confirm(`是否确定删除课程 "${row.name}"`, '确认信息', {
           distinguishCancelAndClose: true,
           confirmButtonText: '删除',
           cancelButtonText: '取消'

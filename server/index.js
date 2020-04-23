@@ -7,6 +7,7 @@ app.use(express.json())//在路由器中使用body
 
 require('./plugins/db')(app)
 require('./routes/admin')(app)
+require('./routes/web')(app)
 
 
 

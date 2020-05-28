@@ -6,6 +6,8 @@ module.exports = app => {
     const Teacher = require('../../models/Teacher')
     const Class = require('../../models/Class')
     const Student = require('../../models/Student')
+    var scanMessage = ""
+    var scanStudentList = []
     
 
 
@@ -13,7 +15,6 @@ module.exports = app => {
 
     //登陆路由
     router.post('/login',async(request,response) => {
-        // response.send('ok')
         // console.log(request.body)
         const {userName,password} = request.body
         //根据用户名找用户
@@ -25,7 +26,6 @@ module.exports = app => {
             })
         }
         //验证密码
-
         if(user.password!=password){
             return response.status(422).send({
                 message:'密码不正确'
@@ -139,12 +139,9 @@ module.exports = app => {
     //生成二维码的路由
     router.get('/create_qrcode/:text',async (req, res) => {
         var text = req.params.text
+        scanMessage = text//将二维码的信息存储在全局的scanmessage上
+        // console.log(scanMessage)
         // console.log(text)
-        // var img = qr.image(text,{type:'png',size:10})
-        // res.status(200).send({
-        //     'Content-Type': 'image/png'
-        // })
-        // img.pipe(res)
         try {
           var img = qr.image(text,{size :10});
           res.writeHead(200, {'Content-Type': 'image/png'});
@@ -154,6 +151,75 @@ module.exports = app => {
           res.end('<h1>414 Request-URI Too Large</h1>');
         }
       })
+    //修改课程状态为正在上课
+    router.get('/classStatesChance/:id',async(request,response) => {
+        const model = await Class.findById(request.params.id)
+        // console.log(model)
+        model.state = 1
+        await Class.findByIdAndUpdate(request.params.id,model)
+        response.send({
+            model:model
+        })
+    })
+    //修改课程状态为正在下课
+    router.get('/classStatesChance2/:id',async(request,response) => {
+        const model = await Class.findById(request.params.id)
+        // console.log(model)
+        model.state = 0
+        await Class.findByIdAndUpdate(request.params.id,model)
+        response.send({
+            model:model
+        })
+    })
+    //获取二维码信息接口
+    router.get('/scanMessage',async(request,response) => {
+        // console.log(scanMessage)
+        response.send({
+            message:scanMessage
+        })
+    })
+    //学生扫码后将个人信息和二维码信息发送到后台,完成签到的操作
+    router.post('/studentScanMessage',async(request,response) => {
+        // console.log(request.body)
+        const studentId = request.body.student._id
+        const classId = request.body.classId
+        // console.log(classId)
+        // console.log(request.body.QRMessage)
+        const model = await Class.findById(classId)
+        if(request.body.QRMessage === scanMessage && model.state === 1){
+            //当学生扫码得到的二维码信息和后台的二维码信息一样的时候，将学生的isScande状态改为1表示已经扫码
+            // request.body.student.isScande = 1
+            // await Student.findByIdAndUpdate(studentId,request.body.student)
+            scanStudentList.push(request.body.student)
+            // console.log(scanStudentList)
+            response.status(200).send({
+                studentList:scanStudentList
+            })
+        }else{//当学生扫码得到的二维码信息和后台的二维码信息不一样的时候
+            response.status(422).send({
+                message:"二维码已过期"
+            })
+        }
+    })
+    //获取当前签到表信息
+    router.get('/studentScanMessage',async(request,response) => {
+        response.status(200).send({
+            studentList:scanStudentList
+        })
+    })
+    //网页的前端页面每隔一段时间都会向后台请求签到列表
+    router.get('/studentList',async(request,response) => {
+        response.send({
+            studentList:scanStudentList
+        })
+    })
+    //清楚签到表的信息
+    router.get('/clear',async(request,response) => {
+        scanStudentList = []
+        response.send('清除成功')
+    })
+
+
 
     app.use('/web/api',router)
 }

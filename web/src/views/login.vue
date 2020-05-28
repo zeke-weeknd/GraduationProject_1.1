@@ -140,13 +140,13 @@ export default {
         transform: translateX(-50%);
         .logo{
             width: 500px;
-            height: 500px;
+            // height: 500px;
             background-color: #fff;
             position: absolute;
             top: 40%;
             left: 10%;
             transform: translateY(-50%);
-            img,h2{
+            img, h2{
                 position:absolute;
                 top: 50%;
                 left: 50%;
@@ -155,7 +155,7 @@ export default {
                 color: #fff;
             }
             .sign{
-                top: 35%;
+                top: 45%;
             }
             .login-register{
                 position:absolute;

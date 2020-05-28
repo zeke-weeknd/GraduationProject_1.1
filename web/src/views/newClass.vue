@@ -60,7 +60,7 @@ export default {
             })
             //保存完一个课程后，将选中的学生的id拿出来，修改他们的class字段数据
             // console.log(this.model.students)
-            // await this.$http.post(`class/changeClass/${this.model._id}`,this.model)
+            await this.$http.post(`class/changeClass/${this.model._id}`,this.model)
         },
         async fetch(){
             const res = await this.$http.get(`class/${this.id}`)
